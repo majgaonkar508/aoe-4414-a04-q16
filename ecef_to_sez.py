@@ -61,17 +61,17 @@ else:
     exit()
 
 # calculate ECEF vector from the station to object / satellite
-x_ECEF_km = o_x_km - x_km
-y_ECEF_km = o_y_km - y_km
-z_ECEF_km = o_z_km - z_km
+x_ECEF_km = x_km - o_x_km
+y_ECEF_km = y_km - o_y_km
+z_ECEF_km = z_km - o_z_km
 
 # calculate longitude
-lon_rad = math.atan2(y_km,x_km)
+lon_rad = math.atan2(o_y_km,o_x_km)
 lon_deg = lon_rad*180.0/math.pi
 
 # initialize lat_rad, r_lon_km, r_z_km
-lat_rad = math.asin(z_km/math.sqrt(x_km**2+y_km**2+z_km**2))
-r_lon_km = math.sqrt(x_km**2+y_km**2)
+lat_rad = math.asin(o_z_km/math.sqrt(o_x_km**2+o_y_km**2+o_z_km**2))
+r_lon_km = math.sqrt(o_x_km**2+o_y_km**2)
 prev_lat_rad = float('nan')
 
 # iteratively find latitude
@@ -81,7 +81,7 @@ while (math.isnan(prev_lat_rad) or abs(lat_rad-prev_lat_rad)>10e-7) and count<5:
   denom = calc_denom(E_E,lat_rad)
   c_E = R_E_KM/denom
   prev_lat_rad = lat_rad
-  lat_rad = math.atan((z_km+c_E*(E_E**2)*math.sin(lat_rad))/r_lon_km)
+  lat_rad = math.atan((o_z_km+c_E*(E_E**2)*math.sin(lat_rad))/r_lon_km)
   count = count+1
   
 # calculate hae
